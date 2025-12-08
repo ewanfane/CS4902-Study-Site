@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS4092 Past Papers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f1f5f9; }
+        .font-code { font-family: 'JetBrains Mono', monospace; }
+        .accordion-content { transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out; max-height: 0; opacity: 0; overflow: hidden; }
+        .accordion-open .accordion-content { max-height: 2000px; opacity: 1; }
+        .accordion-icon { transition: transform 0.3s ease; }
+        .accordion-open .accordion-icon { transform: rotate(180deg); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased selection:bg-purple-500 selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="bg-slate-800 border-b border-slate-700 text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 font-bold text-xl text-teal-400">
+                        CS4092 Papers
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="course.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Course</a>
+                            <a href="code.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Code</a>
+                            <a href="questions.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Questions</a>
+                            <a href="safety_net.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Safety Net</a>
+                            <a href="flashcards.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Flashcards</a>
+                            <a href="quiz.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Quiz</a>
+                            <a href="pastpapers.html" class="bg-slate-900 text-white px-3 py-2 rounded-md text-sm font-medium">Past Papers</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile -->
+        <div class="md:hidden flex space-x-2 p-2 overflow-x-auto bg-slate-900 border-b border-slate-700">
+             <a href="course.html" class="px-3 py-2 text-sm text-slate-400">Course</a>
+             <a href="quiz.html" class="px-3 py-2 text-sm text-slate-400">Quiz</a>
+             <a href="pastpapers.html" class="px-3 py-2 text-sm text-white font-bold">Papers</a>
+        </div>
+    </nav>
+
+    <header class="bg-slate-800 py-10 px-6 shadow-sm border-b border-slate-700">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-4xl font-black text-white mb-2">Past Exam Papers</h1>
+            <p class="text-slate-400 text-lg">Consolidated Question Bank (2022-2025)</p>
+            <div class="flex gap-2 mt-4 text-xs font-bold uppercase tracking-wider">
+                <span class="bg-teal-900 text-teal-200 px-3 py-1 rounded-full border border-teal-700">Compiled</span>
+                <span class="bg-purple-900 text-purple-200 px-3 py-1 rounded-full border border-purple-700">Solved</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 py-12 space-y-12">
+
+        <!-- TOPIC 1 -->
+        <section>
+            <div class="flex items-center mb-6">
+                <div class="w-10 h-10 rounded bg-blue-600 text-white flex items-center justify-center font-bold text-lg mr-4">1</div>
+                <h2 class="text-2xl font-bold text-white">RecyclerView & Adapters</h2>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- Q1 -->
+                <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden accordion-item">
+                    <button class="w-full text-left px-6 py-4 flex justify-between items-center bg-slate-800 hover:bg-slate-750 transition" onclick="toggleAccordion(this)">
+                        <div>
+                            <h3 class="font-bold text-white">Q1: RecyclerView vs ListView Differences</h3>
+                            <p class="text-xs text-slate-400 mt-1">Winter 2023/24, Winter 2024/25</p>
+                        </div>
+                        <span class="text-slate-400 accordion-icon">▼</span>
+                    </button>
+                    <div class="accordion-content bg-slate-900/50">
+                        <div class="p-6 text-slate-300 text-sm leading-relaxed border-t border-slate-700">
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>ViewHolder Pattern:</strong> RecyclerView enforces the use of the ViewHolder pattern, which stores references to the views in a row. ListView did not enforce this, leading to inefficient findViewById() calls during scrolling.</li>
+                                <li><strong>Layout Managers:</strong> RecyclerView decouples the list layout from the container. You must assign a LayoutManager (Linear, Grid, or Staggered), whereas ListView was restricted to vertical lists.</li>
+                                <li><strong>Animations:</strong> RecyclerView has built-in support for item animations (add/remove), which ListView lacks.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden accordion-item">
+                    <button class="w-full text-left px-6 py-4 flex justify-between items-center bg-slate-800 hover:bg-slate-750 transition" onclick="toggleAccordion(this)">
+                        <div>
+                            <h3 class="font-bold text-white">Q2: Steps to generate RecyclerView list</h3>
+                            <p class="text-xs text-slate-400 mt-1">High Frequency: 3 Papers</p>
+                        </div>
+                        <span class="text-slate-400 accordion-icon">▼</span>
+                    </button>
+                    <div class="accordion-content bg-slate-900/50">
+                        <div class="p-6 text-slate-300 text-sm leading-relaxed border-t border-slate-700 space-y-2">
+                            <p><strong>1. Dependencies:</strong> Add RecyclerView library to build.gradle.</p>
+                            <p><strong>2. Layout XML:</strong> Add <code>&lt;RecyclerView&gt;</code> to Activity layout.</p>
+                            <p><strong>3. Row Layout:</strong> Create <code>row_item.xml</code> for single item design.</p>
+                            <p><strong>4. Create Adapter:</strong> Extend <code>RecyclerView.Adapter</code>.</p>
+                            <p><strong>5. Initialize:</strong> In Activity, find logic, set LayoutManager, and setAdapter.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden accordion-item">
+                    <button class="w-full text-left px-6 py-4 flex justify-between items-center bg-slate-800 hover:bg-slate-750 transition" onclick="toggleAccordion(this)">
+                        <div>
+                            <h3 class="font-bold text-white">Q3: Adapter Structure & Methods</h3>
+                            <p class="text-xs text-slate-400 mt-1">Winter 2022 - 2025</p>
+                        </div>
+                        <span class="text-slate-400 accordion-icon">▼</span>
+                    </button>
+                    <div class="accordion-content bg-slate-900/50">
+                        <div class="p-6 text-slate-300 text-sm leading-relaxed border-t border-slate-700 space-y-4">
+                            <div>
+                                <strong class="text-teal-400">1. onCreateViewHolder(parent, viewType)</strong>
+                                <p>Inflates the XML layout (row_item.xml). <em>Analogy: Buying the blank canvas.</em></p>
+                            </div>
+                            <div>
+                                <strong class="text-teal-400">2. onBindViewHolder(holder, position)</strong>
+                                <p>Binds data from the list to the View using the Holder. <em>Analogy: Painting the picture.</em></p>
+                            </div>
+                            <div>
+                                <strong class="text-teal-400">3. getItemCount()</strong>
+                                <p>Returns total items. RecyclerView needs this to know scrolling limits.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q4 -->
+                <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden accordion-item">
+                    <button class="w-full text-left px-6 py-4 flex justify-between items-center bg-slate-800 hover:bg-slate-750 transition" onclick="toggleAccordion(this)">
+                        <div>
+                            <h3 class="font-bold text-white">Q4: Implementing onClick in RecyclerView</h3>
+                            <p class="text-xs text-slate-400 mt-1">High Frequency</p>
+                        </div>
+                        <span class="text-slate-400 accordion-icon">▼</span>
+                    </button>
+                    <div class="accordion-content bg-slate-900/50">
+                        <div class="p-6 text-slate-300 text-sm leading-relaxed border-t border-slate-700">
+                            <p>RecyclerView doesn't have a default OnItemClick. We use an <strong>Interface Approach</strong>:</p>
+                            <ol class="list-decimal list-inside mt-2 space-y-1 text-slate-400">
+                                <li><strong>Define Interface:</strong> created inside Adapter (e.g. <code>onItemClick(int pos)</code>).</li>
+                                <li><strong>Implement:</strong> Activity implements this interface.</li>
+                                <li><strong>Pass:</strong> Pass Activity (this) to Adapter constructor.</li>
+                                <li><strong>Trigger:</strong> In <code>ViewHolder</code>, set <code>itemView.setOnClickListener</code> to call the interface method.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q5 Code -->
+                <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden accordion-item">
+                     <button class="w-full text-left px-6 py-4 flex justify-between items-center bg-slate-800 hover:bg-slate-750 transition" onclick="toggleAccordion(this)">
+                        <div>
+                            <h3 class="font-bold text-white">Q5: Code for Activity onCreate()</h3>
+                            <p class="text-xs text-slate-400 mt-1">Winter 2022/23</p>
+                        </div>
+                        <span class="text-slate-400 accordion-icon">▼</span>
+                    </button>
+                    <div class="accordion-content bg-slate-900/50">
+                        <div class="p-4 bg-[#1e1e1e] border-t border-slate-700 overflow-x-auto">
+                            <pre class="font-code text-xs text-slate-300">
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+
+    // 1. Initialize
+    RecyclerView rv = findViewById(R.id.myRecyclerView);
+
+    // 2. Layout Manager (Crucial!)
+    rv.setLayoutManager(new LinearLayoutManager(this));
+
+    // 3. Adapter
+    List&lt;Person&gt; data = db.getAll();
+    MyAdapter adapter = new MyAdapter(data, this);
+    rv.setAdapter(adapter);
+}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- TOPIC 2 -->
+        <section>
+            <div class="flex items-center mb-6">
+                <div class="w-10 h-10 rounded bg-indigo-600 text-white flex items-center justify-center font-bold text-lg mr-4">2</div>
+                <h2 class="text-2xl font-bold text-white">Navigation & Intents</h2>
+            </div>
+            
+            <div class="space-y-4">
+                 <!-- Q1 Code -->
+                 <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden accordion-item">
+                    <button class="w-full text-left px-6 py-4 flex justify-between items-center bg-slate-800 hover:bg-slate-750 transition" onclick="toggleAccordion(this)">
+                       <div>
+                           <h3 class="font-bold text-white">Q1: Sending Data (onClickItem Code)</h3>
+                           <p class="text-xs text-slate-400 mt-1">Seen in ALL Papers</p>
+                       </div>
+                       <span class="text-slate-400 accordion-icon">▼</span>
+                   </button>
+                   <div class="accordion-content bg-slate-900/50">
+                       <div class="p-4 bg-[#1e1e1e] border-t border-slate-700 overflow-x-auto">
+                           <pre class="font-code text-xs text-slate-300">
+@Override
+public void onClickItem(int position) {
+   Person p = list.get(position); // 1. Get Object
+   
+   // 2. Explicit Intent
+   Intent i = new Intent(this, EditActivity.class);
+   
+   // 3. Put Extras
+   i.putExtra("id", p.getId());
+   i.putExtra("name", p.getName());
+
+   startActivity(i);
+}</pre>
+                       </div>
+                   </div>
+               </div>
+
+                <!-- Q2 Code -->
+                <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden accordion-item">
+                    <button class="w-full text-left px-6 py-4 flex justify-between items-center bg-slate-800 hover:bg-slate-750 transition" onclick="toggleAccordion(this)">
+                       <div>
+                           <h3 class="font-bold text-white">Q2: Receiving Data Code</h3>
+                           <p class="text-xs text-slate-400 mt-1">Seen in ALL Papers</p>
+                       </div>
+                       <span class="text-slate-400 accordion-icon">▼</span>
+                   </button>
+                   <div class="accordion-content bg-slate-900/50">
+                       <div class="p-4 bg-[#1e1e1e] border-t border-slate-700 overflow-x-auto">
+                           <pre class="font-code text-xs text-slate-300">
+// In onCreate()
+Bundle extras = getIntent().getExtras();
+if (extras != null) {
+    int id = extras.getInt("id");
+    String name = extras.getString("name");
+    
+    // Populate UI
+    nameField.setText(name);
+}</pre>
+                       </div>
+                   </div>
+               </div>
+
+               <!-- Q3 -->
+               <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden accordion-item">
+                <button class="w-full text-left px-6 py-4 flex justify-between items-center bg-slate-800 hover:bg-slate-750 transition" onclick="toggleAccordion(this)">
+                    <div>
+                        <h3 class="font-bold text-white">Q3: Explicit vs Implicit Intents</h3>
+                        <p class="text-xs text-slate-400 mt-1">Common Theory Question</p>
+                    </div>
+                    <span class="text-slate-400 accordion-icon">▼</span>
+                </button>
+                <div class="accordion-content bg-slate-900/50">
+                    <div class="p-6 text-slate-300 text-sm leading-relaxed border-t border-slate-700 space-y-4">
+                        <div class="border-l-4 border-teal-500 pl-4">
+                            <strong class="text-white block mb-1">Explicit Intent</strong>
+                            <p>You specify the <strong>exact component class</strong>. Used for internal navigation.</p>
+                            <code class="text-xs bg-slate-800 p-1 rounded mt-1 block w-max">new Intent(this, DetailActivity.class);</code>
+                        </div>
+                        <div class="border-l-4 border-blue-500 pl-4">
+                            <strong class="text-white block mb-1">Implicit Intent</strong>
+                            <p>You declare a <strong>general action</strong> (e.g., View URL). OS finds the app.</p>
+                            <code class="text-xs bg-slate-800 p-1 rounded mt-1 block w-max">new Intent(Intent.ACTION_VIEW, Uri.parse("..."));</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </section>
+
+        <!-- TOPIC 3 -->
+        <section>
+            <div class="flex items-center mb-6">
+                <div class="w-10 h-10 rounded bg-green-600 text-white flex items-center justify-center font-bold text-lg mr-4">3</div>
+                <h2 class="text-2xl font-bold text-white">Database (SQLite & Room)</h2>
+            </div>
+            
+            <div class="space-y-4">
+                 <!-- Save Check Logic -->
+                 <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden accordion-item">
+                    <button class="w-full text-left px-6 py-4 flex justify-between items-center bg-slate-800 hover:bg-slate-750 transition" onclick="toggleAccordion(this)">
+                        <div>
+                            <h3 class="font-bold text-white">Q1: Update vs Create Logic</h3>
+                            <p class="text-xs text-slate-400 mt-1">Process Explanation</p>
+                        </div>
+                        <span class="text-slate-400 accordion-icon">▼</span>
+                    </button>
+                    <div class="accordion-content bg-slate-900/50">
+                        <div class="p-6 text-slate-300 text-sm leading-relaxed border-t border-slate-700">
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Capture ID:</strong> Passed from List Activity. If -1, it's New. If >0, it's Edit.</li>
+                                <li><strong>User Input:</strong> Get strings from EditText.</li>
+                                <li><strong>Save:</strong> Call DB helper update(id, ...) or add(...).</li>
+                                <li><strong>Finish:</strong> Close activity to return to list.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SQLite Code -->
+                <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden accordion-item">
+                     <button class="w-full text-left px-6 py-4 flex justify-between items-center bg-slate-800 hover:bg-slate-750 transition" onclick="toggleAccordion(this)">
+                        <div>
+                            <h3 class="font-bold text-white">Q2: SQLite Save Button Code</h3>
+                            <p class="text-xs text-slate-400 mt-1">Older Papers</p>
+                        </div>
+                        <span class="text-slate-400 accordion-icon">▼</span>
+                    </button>
+                    <div class="accordion-content bg-slate-900/50">
+                        <div class="p-4 bg-[#1e1e1e] border-t border-slate-700 overflow-x-auto">
+                            <pre class="font-code text-xs text-slate-300">
+saveBtn.setOnClickListener(v -> {
+    String name = nameInput.getText().toString();
+    DatabaseHelper db = new DatabaseHelper(this);
+    
+    if (id != -1) {
+        db.update(id, name);
+    } else {
+        db.add(name);
+    }
+    finish();
+});</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Room Logic -->
+                <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden accordion-item">
+                    <button class="w-full text-left px-6 py-4 flex justify-between items-center bg-slate-800 hover:bg-slate-750 transition" onclick="toggleAccordion(this)">
+                        <div>
+                            <h3 class="font-bold text-white">Q3/Q4/Q5: Room API & Threads</h3>
+                            <p class="text-xs text-slate-400 mt-1 text-red-400 font-bold">CRITICAL EXAM TOPIC</p>
+                        </div>
+                        <span class="text-slate-400 accordion-icon">▼</span>
+                    </button>
+                    <div class="accordion-content bg-slate-900/50">
+                        <div class="p-6 text-slate-300 text-sm leading-relaxed border-t border-slate-700 space-y-4">
+                            <p><strong>Steps to Room:</strong> 1. Dependencies, 2. @Entity, 3. @Dao, 4. @Database class, 5. Instance.</p>
+                            
+                            <div class="bg-red-900/20 border border-red-800 p-4 rounded text-red-200">
+                                <strong>Why Background Thread?</strong><br>
+                                DB ops are blocking. Running on Main Thread freezes UI → <span class="font-bold text-white">ANR Error</span>.
+                            </div>
+
+                            <p class="font-bold text-white mt-4">Room Save Code:</p>
+                            <div class="bg-[#1e1e1e] p-4 rounded border border-slate-700">
+                                <pre class="font-code text-xs text-teal-300">
+saveBtn.setOnClickListener(v -> {
+    Building b = new Building(nameInput.getText().toString());
+    
+    // 1. Thread necessary for DB
+    new Thread(() -> {
+        AppDatabase.get(this).dao().insert(b);
+        
+        // 2. UI Thread necessary to finish()
+        runOnUiThread(() -> finish());
+    }).start();
+});</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOPIC 4 -->
+        <section>
+            <div class="flex items-center mb-6">
+                <div class="w-10 h-10 rounded bg-orange-600 text-white flex items-center justify-center font-bold text-lg mr-4">4</div>
+                <h2 class="text-2xl font-bold text-white">Advanced / Misc</h2>
+            </div>
+            
+            <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden accordion-item">
+                <button class="w-full text-left px-6 py-4 flex justify-between items-center bg-slate-800 hover:bg-slate-750 transition" onclick="toggleAccordion(this)">
+                    <div>
+                        <h3 class="font-bold text-white">Q1: Geo-Location Map Launch (Long Click)</h3>
+                        <p class="text-xs text-slate-400 mt-1">Specific Task</p>
+                    </div>
+                    <span class="text-slate-400 accordion-icon">▼</span>
+                </button>
+                <div class="accordion-content bg-slate-900/50">
+                    <div class="p-4 bg-[#1e1e1e] border-t border-slate-700 overflow-x-auto">
+                        <pre class="font-code text-xs text-slate-300">
+holder.itemView.setOnLongClickListener(v -> {
+    String loc = list.get(pos).getLocation();
+    
+    // 1. Parse URI (geo:0,0?q=Dublin)
+    Uri uri = Uri.parse("geo:0,0?q=" + loc);
+    
+    // 2. Implicit Intent
+    Intent mapIntent = new Intent(Intent.ACTION_VIEW, uri);
+    
+    // 3. Launch
+    v.getContext().startActivity(mapIntent);
+    return true;
+});</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-[#0b1120] py-12 text-center text-gray-500 text-sm border-t border-gray-800 mt-12">
+        <p>CS4092 Android Development • Question Bank</p>
+    </footer>
+
+    <script>
+        function toggleAccordion(button) {
+            const item = button.parentElement;
+            item.classList.toggle('accordion-open');
+        }
+    </script>
+</body>
+</html>

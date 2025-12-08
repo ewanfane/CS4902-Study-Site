@@ -1,0 +1,357 @@
+<!--
+PLAN SUMMARY:
+1. Header: Vibrant Android-themed hero section.
+2. Analytics Section: Chart.js Bar Chart showing "Question Frequency by Topic" based on the provided exam papers (RecyclerView: 5, Intents: 4, Database: 5, Advanced: 1). Goal: Compare topic importance.
+3. RecyclerView Section: Comparison cards for ListView vs RecyclerView. Flow diagram for Adapter methods using CSS Grid.
+4. Navigation Section: Visual distinction between Explicit and Implicit Intents. Code snippets for data passing.
+5. Database Section: Step-by-step vertical timeline for Room API implementation. Warning visual for Background Threads.
+6. Advanced Section: Geo-location intent visualization.
+7. Footer: Credits.
+
+CONFIRMATION:
+- NEITHER Mermaid JS NOR SVG were used anywhere in this output.
+- All diagrams are built with HTML/CSS.
+- All charts use Chart.js (Canvas).
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android Exam Mastery - CS4092</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Roboto', sans-serif; background-color: #0f172a; color: #f1f5f9; }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin: 0 auto; height: 350px; max-height: 400px; }
+        .code-block { 
+            font-family: 'Courier New', Courier, monospace; 
+            background-color: #1e293b; 
+            color: #a5b4fc; 
+            border-radius: 0.5rem; 
+            padding: 1rem; 
+            overflow-x: auto; 
+            border: 1px solid #334155;
+        }
+        .step-connector { width: 2px; background-color: #3DDC84; height: 2rem; margin: 0 auto; }
+        .card-hover:hover { transform: translateY(-4px); transition: transform 0.3s ease; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased selection:bg-teal-500 selection:text-white">
+
+    <!-- Hardcoded Navigation -->
+    <nav class="bg-slate-800 border-b border-slate-700 text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 font-bold text-xl text-teal-400">
+                        CS4092 Questions
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="course.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Course</a>
+                            <a href="code.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Code</a>
+                            <a href="questions.html" class="bg-slate-900 text-white px-3 py-2 rounded-md text-sm font-medium">Questions</a>
+                            <a href="safety_net.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Safety Net</a>
+                            <a href="flashcards.html" class="text-yellow-400 hover:bg-slate-700 hover:text-yellow-300 px-3 py-2 rounded-md text-sm font-bold transition-colors">⚡ Flashcards</a>
+                            <a href="quiz.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Quiz</a>
+                            <a href="pastpapers.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Past Papers</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile -->
+        <div class="md:hidden flex space-x-2 p-2 overflow-x-auto bg-slate-900 border-b border-slate-700">
+             <a href="course.html" class="px-3 py-2 text-sm text-slate-400">Course</a>
+             <a href="code.html" class="px-3 py-2 text-sm text-slate-400">Code</a>
+             <a href="questions.html" class="px-3 py-2 text-sm text-white font-bold">Questions</a>
+             <a href="flashcards.html" class="px-3 py-2 text-sm text-yellow-500">Flashcards</a>
+             <a href="quiz.html" class="px-3 py-2 text-sm text-gray-400">Quiz</a>
+             <a href="pastpapers.html" class="px-3 py-2 text-sm text-white font-bold">Papers</a>
+        </div>
+    </nav>
+
+    <header class="bg-slate-800 border-b border-slate-700 text-white py-12 px-4 shadow-lg">
+        <div class="max-w-6xl mx-auto text-center">
+            <h1 class="text-5xl font-black mb-4 tracking-tight"><span class="text-teal-400">Android</span> Exam Mastery</h1>
+            <p class="text-xl text-slate-300 max-w-2xl mx-auto">Visualizing the core concepts of CS4092. From RecyclerViews to Room Persistence, master the key topics found in 2022-2025 exam papers.</p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 gap-12">
+
+        <section class="bg-slate-800 rounded-2xl shadow-md p-8 border border-slate-700">
+            <div class="mb-6 border-l-4 border-teal-500 pl-4">
+                <h2 class="text-3xl font-bold text-white">Exam Strategy: Where to Focus?</h2>
+                <p class="text-slate-300 mt-2">Based on a consolidation of past papers (2022-2025), certain topics appear more frequently. This chart breaks down the question distribution, highlighting that <strong>Database</strong> and <strong>RecyclerViews</strong> are critical high-yield areas.</p>
+            </div>
+            <div class="chart-container">
+                <canvas id="topicChart"></canvas>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="col-span-1 md:col-span-2 text-center mb-4">
+                <h2 class="text-3xl font-bold text-white">Topic 1: The List Powerhouse</h2>
+                <p class="text-slate-400">Why RecyclerView replaced ListView and how to implement it.</p>
+            </div>
+
+            <div class="bg-slate-800 rounded-xl shadow-md p-6 card-hover border-t-4 border-blue-500 border border-slate-700">
+                <h3 class="text-xl font-bold mb-4 flex items-center text-white">
+                    <span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">VS</span>
+                    RecyclerView vs ListView
+                </h3>
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <span class="text-2xl mr-2">📦</span>
+                        <div>
+                            <strong class="block text-slate-200">ViewHolder Pattern</strong>
+                            <p class="text-sm text-slate-400">Enforced by RecyclerView for efficiency. ListView didn't enforce it, leading to laggy scrolls.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-2xl mr-2">📐</span>
+                        <div>
+                            <strong class="block text-slate-200">Layout Managers</strong>
+                            <p class="text-sm text-slate-400">Decoupled layout logic. Choose Linear, Grid, or Staggered. ListView was vertical only.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-2xl mr-2">✨</span>
+                        <div>
+                            <strong class="block text-slate-200">Animations</strong>
+                            <p class="text-sm text-slate-400">Built-in support for item add/remove animations. ListView requires custom hacks.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-slate-800 rounded-xl shadow-md p-6 card-hover border-t-4 border-teal-500 border border-slate-700">
+                <h3 class="text-xl font-bold mb-4 text-white">The Adapter Trinity</h3>
+                <p class="text-sm text-slate-400 mb-6">The 3 core methods you MUST override in your Adapter.</p>
+                
+                <div class="space-y-0 text-slate-100">
+                    <div class="bg-slate-700 p-4 rounded-lg border border-slate-600 relative">
+                        <h4 class="font-bold text-teal-400">1. onCreateViewHolder</h4>
+                        <p class="text-sm">Inflates XML layout. <em>Analogy: Buying a blank canvas.</em></p>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div class="bg-slate-700 p-4 rounded-lg border border-slate-600 relative">
+                        <h4 class="font-bold text-teal-400">2. onBindViewHolder</h4>
+                        <p class="text-sm">Binds data at <code>position</code> to views. <em>Analogy: Painting the canvas.</em></p>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div class="bg-slate-700 p-4 rounded-lg border border-slate-600 relative">
+                        <h4 class="font-bold text-teal-400">3. getItemCount</h4>
+                        <p class="text-sm">Returns total list size so the Recycler knows when to stop.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-slate-800 text-white rounded-2xl shadow-lg p-8 border border-slate-700">
+            <h2 class="text-3xl font-bold mb-6 border-b border-slate-600 pb-4">Topic 2: Navigation & Intents</h2>
+            <p class="text-slate-300 mb-8">Moving between screens (Activities) is fundamental. Understanding the difference between explicit instructions and vague requests is key.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-slate-900 p-6 rounded-xl border border-slate-700">
+                    <h3 class="text-xl font-bold text-teal-400 mb-2">Explicit Intents</h3>
+                    <p class="text-sm text-slate-400 mb-4">You specify the exact target component.</p>
+                    <div class="code-block text-xs">
+                        // Navigating inside your app<br>
+                        new Intent(this, TargetActivity.class);
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 p-6 rounded-xl border border-slate-700">
+                    <h3 class="text-xl font-bold text-blue-400 mb-2">Implicit Intents</h3>
+                    <p class="text-sm text-slate-400 mb-4">You declare an action; OS finds the app.</p>
+                    <div class="code-block text-xs">
+                        // Opening a URL<br>
+                        new Intent(Intent.ACTION_VIEW,<br> Uri.parse("http://google.com"));
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-[#1E293B] p-6 rounded-xl border border-slate-600">
+                <h3 class="text-lg font-bold text-white mb-2">Passing Data (The "Extras" Pattern)</h3>
+                <p class="text-sm text-slate-400 mb-4">How to send an ID from a List to a Detail view.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <span class="text-xs uppercase font-bold text-slate-500">Sender (Activity 1)</span>
+                        <div class="code-block text-xs mt-1">
+                            intent.putExtra("id", person.getId());<br>
+                            startActivity(intent);
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-xs uppercase font-bold text-slate-500">Receiver (Activity 2)</span>
+                        <div class="code-block text-xs mt-1">
+                            Bundle extras = getIntent().getExtras();<br>
+                            int id = extras.getInt("id");
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 gap-8">
+            <div class="mb-4">
+                <h2 class="text-3xl font-bold text-white">Topic 3: Data Persistence (Room API)</h2>
+                <p class="text-slate-400 mt-2">The modern way to handle SQLite. Room abstracts the raw SQL but requires strict architectural steps.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <div class="col-span-1 md:col-span-1 bg-slate-800 text-slate-100 p-6 rounded-xl shadow-md border-l-8 border-teal-500 border border-slate-700">
+                    <h3 class="font-bold text-xl mb-4">The Room Recipe</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-teal-500 text-white flex items-center justify-center font-bold mr-3">1</div>
+                            <p class="text-sm"><strong>Dependencies:</strong> Add Room to build.gradle</p>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-teal-500 text-white flex items-center justify-center font-bold mr-3">2</div>
+                            <p class="text-sm"><strong>@Entity:</strong> Annotate class (The Table)</p>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-teal-500 text-white flex items-center justify-center font-bold mr-3">3</div>
+                            <p class="text-sm"><strong>@Dao:</strong> Interface for Insert/Query methods</p>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-teal-500 text-white flex items-center justify-center font-bold mr-3">4</div>
+                            <p class="text-sm"><strong>@Database:</strong> Abstract class extending RoomDatabase</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-span-1 md:col-span-2 bg-red-900/20 p-6 rounded-xl shadow-md border border-red-800">
+                    <h3 class="font-bold text-xl text-red-500 mb-2 flex items-center">
+                        <span class="text-3xl mr-2">⚠️</span> CRITICAL EXAM CONCEPT
+                    </h3>
+                    <p class="text-slate-100 font-medium mb-4">Why use a Background Thread?</p>
+                    <p class="text-sm text-slate-300 mb-4">Database operations are "blocking". If you run them on the <strong>Main UI Thread</strong>, the app freezes. If it freezes for >5 seconds, you get an <strong>ANR (Application Not Responding)</strong> crash.</p>
+                    
+                    <div class="code-block text-xs bg-slate-900 border border-slate-700">
+                        // The "Golden Rule" Pattern in Code<br>
+                        saveButton.setOnClickListener(v -> {<br>
+                        &nbsp;&nbsp;<span class="text-green-400">new Thread(() -> {</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;// 1. Heavy Work (Database)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;db.dao().insert(data);<br><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;// 2. Update UI (Must be on UI Thread)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-yellow-400">runOnUiThread(() -> finish());</span><br>
+                        &nbsp;&nbsp;<span class="text-green-400">}).start();</span><br>
+                        });
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-gradient-to-r from-teal-700 to-purple-800 rounded-2xl p-8 text-white shadow-lg border border-slate-700">
+            <h2 class="text-2xl font-bold mb-4">Advanced: Geo-Location Feature</h2>
+            <div class="flex flex-col md:flex-row items-center gap-6">
+                <div class="flex-1">
+                    <p class="mb-4 text-white/90">Often appearing as "Question 1 Part 5" or "Question 2 Part 5". You need to launch a Map using an Implicit Intent.</p>
+                    <ul class="text-sm list-disc list-inside text-white/80">
+                        <li>Use <code>ACTION_VIEW</code></li>
+                        <li>Parse URI with <code>geo:0,0?q=Location</code></li>
+                        <li>Always resolve activity before starting to prevent crashes.</li>
+                    </ul>
+                </div>
+                <div class="flex-1 w-full">
+                    <div class="code-block text-xs bg-black/30 backdrop-blur-sm border border-white/20">
+                        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + location);<br>
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);<br>
+                        startActivity(mapIntent);
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-8 text-gray-500 text-sm">
+        <p>Generated for CS4092 Exam Revision • Based on 2022-2025 Paper Consolidation</p>
+    </footer>
+
+    <script>
+        // Data derived from the Exam Question Bank analysis
+        // RecyclerView: Q1, Q2, Q3, Q4, Q5 (5 parts)
+        // Intents: Q1, Q2, Q3, Q4 (4 parts)
+        // Database: Q1, Q2, Q3, Q4, Q5 (5 parts)
+        // Advanced: Q1 (1 part)
+
+        const ctx = document.getElementById('topicChart').getContext('2d');
+        
+        // Label Wrapping Logic
+        const labels = ['RecyclerView & Adapters', 'Navigation & Intents', 'Database (SQLite/Room)', 'Advanced (Geo/Misc)'];
+        const processedLabels = labels.map(label => {
+            if (label.length > 16) {
+                return label.split(' ');
+            }
+            return label;
+        });
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: processedLabels,
+                datasets: [{
+                    label: 'Number of Questions (2022-2025)',
+                    data: [5, 4, 5, 1],
+                    backgroundColor: [
+                        '#3DDC84', // Android Green
+                        '#4285F4', // Blue
+                        '#073042', // Navy
+                        '#FFB900'  // Accent
+                    ],
+                    borderRadius: 8,
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                    return label.join(' ');
+                                } else {
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#94a3b8' },
+                        grid: { color: '#334155' },
+                        title: {
+                            display: true,
+                            text: 'Frequency in Past Papers',
+                            color: '#94a3b8'
+                        }
+                    },
+                    x: {
+                        ticks: { color: '#94a3b8' },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

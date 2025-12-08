@@ -1,0 +1,306 @@
+Android Exam Question Bank (CS4092)
+
+Consolidated Questions & Answers from 2022-2025 Papers
+
+📱 Topic 1: RecyclerView & Adapters
+
+Q1: Explain how RecyclerView works differently from ListView (or describe 2 differences).
+From Winter 2023/24, Winter 2024/25
+
+Answer:
+
+ViewHolder Pattern: RecyclerView enforces the use of the ViewHolder pattern, which stores references to the views in a row. ListView did not enforce this, leading to inefficient findViewById() calls during scrolling.
+
+Layout Managers: RecyclerView decouples the list layout from the container. You must assign a LayoutManager (Linear, Grid, or Staggered), whereas ListView was restricted to vertical lists.
+
+Animations: RecyclerView has built-in support for item animations (add/remove), which ListView lacks.
+
+Q2: Detail the steps you may have to take to generate the RecyclerView list of the first Activity.
+From Winter 2022/23, Autumn 2023/24, Winter 2023/24
+
+Answer:
+
+Add Dependencies: Ensure the RecyclerView library is added to the build.gradle file.
+
+Layout XML: Add the <androidx.recyclerview.widget.RecyclerView> element to the Activity's layout file.
+
+Row Layout: Create a separate XML file (e.g., row_item.xml) representing the design of a single list item.
+
+Create Adapter: Create a Java class extending RecyclerView.Adapter to bind data to the views.
+
+Initialize in Activity:
+
+Find the RecyclerView by ID.
+
+Create an instance of the Adapter passing the data list.
+
+Set a LayoutManager (e.g., LinearLayoutManager).
+
+Set the adapter to the RecyclerView (setAdapter).
+
+Q3: Detail the structure of the DataAdapter class and explain the functionality of its methods.
+From Winter 2022/23, Winter 2023/24, Winter 2024/25
+
+Answer:
+The Adapter must extend RecyclerView.Adapter<MyViewHolder> and implement three core methods:
+
+onCreateViewHolder(ViewGroup parent, int viewType):
+
+Function: Inflates the XML layout for a single row (row_item.xml) and creates a new ViewHolder instance.
+
+Analogy: Buying a new blank canvas.
+
+onBindViewHolder(MyViewHolder holder, int position):
+
+Function: Binds the data from the dataset (at the specific position) to the Views held by the ViewHolder.
+
+Analogy: Painting the specific picture on the canvas.
+
+getItemCount():
+
+Function: Returns the total number of items in the dataset. The RecyclerView uses this to know when to stop scrolling.
+
+Q4: Detail an approach to achieve the onClick functionality for this RecyclerView list.
+From Winter 2022/23, Autumn 2023/24, Winter 2024/25
+
+Answer:
+Since RecyclerView does not have a built-in OnItemClickListener like ListView, we use an Interface approach:
+
+Define Interface: Create an interface (e.g., OnItemListener) inside the Adapter with a method onItemClick(int position).
+
+Implement in Activity: The Main Activity implements this interface and overrides the method to handle the logic (e.g., opening a new activity).
+
+Pass to Adapter: Pass this (the Activity instance) to the Adapter's constructor.
+
+Trigger in ViewHolder: Inside the ViewHolder class, set an OnClickListener on the itemView. When clicked, call interface.onItemClick(getAdapterPosition()).
+
+Q5: Give the code of the onCreate method that creates this list.
+From Winter 2022/23
+
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+
+    // 1. Initialize RecyclerView
+    RecyclerView recyclerView = findViewById(R.id.myRecyclerView);
+
+    // 2. Setup Layout Manager
+    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    // 3. Get Data (Assume dbHelper exists)
+    List<Person> peopleList = dbHelper.getAllPeople();
+
+    // 4. Initialize Adapter (passing data and click listener)
+    MyAdapter adapter = new MyAdapter(peopleList, this);
+
+    // 5. Set Adapter
+    recyclerView.setAdapter(adapter);
+}
+
+
+🚀 Topic 2: Navigation & Intents
+
+Q1: Give the code for the void onClickItem(int position) method that sends the data from Activity 1 to Activity 2.
+From All Papers
+
+Answer:
+
+@Override
+public void onClickItem(int position) {
+    // 1. Get the specific object from the list
+    Person selectedPerson = peopleList.get(position);
+
+    // 2. Create Explicit Intent
+    Intent intent = new Intent(MainActivity.this, EditActivity.class);
+
+    // 3. Attach Data (Extras)
+    intent.putExtra("id", selectedPerson.getId());
+    intent.putExtra("name", selectedPerson.getName());
+    intent.putExtra("phone", selectedPerson.getPhone());
+    // ... add other fields as needed
+
+    // 4. Start Activity
+    startActivity(intent);
+}
+
+
+Q2: Give the snippet of code in Activity 2's onCreate method to extract the data from the intent.
+From All Papers
+
+Answer:
+
+// Inside Activity 2 onCreate()
+Bundle extras = getIntent().getExtras();
+
+if (extras != null) {
+    // Extract data using keys
+    int id = extras.getInt("id");
+    String name = extras.getString("name");
+    String phone = extras.getString("phone");
+
+    // Populate EditTexts
+    nameEditText.setText(name);
+    phoneEditText.setText(phone);
+}
+
+
+Q3: Explain the differences between implicit and explicit intents and how they work.
+From Autumn 2023/24, Winter 2023/24
+
+Answer:
+
+Explicit Intents:
+
+Definition: You specify the exact component (class name) you want to start.
+
+Use Case: Navigating within your own app (e.g., MainActivity -> DetailActivity).
+
+Code: new Intent(this, TargetActivity.class);
+
+Implicit Intents:
+
+Definition: You declare a general action you want to perform (e.g., "View Map", "Dial Number"), and the Android OS finds an app capable of handling it.
+
+Use Case: Using other apps to perform tasks (e.g., Opening a URL in Chrome, Dialing a number).
+
+Code: new Intent(Intent.ACTION_VIEW, Uri.parse("http://google.com"));
+
+Q4: Compare startActivity() and startActivityForResult().
+From Examples - Tagged.pdf
+
+Answer:
+
+startActivity(): Launches an activity without expecting any return data. Used for simple navigation (e.g., "About Us" page).
+
+startActivityForResult(): Launches an activity and waits for a result code and data to come back. Used when the second activity needs to return user input (e.g., Picking a Contact, Taking a Photo).
+
+💾 Topic 3: Database (SQLite & Room)
+
+Q1: Detail how you will deal with the process of updating an existing item.
+From Winter 2022/23, Autumn 2023/24, Winter 2023/24
+
+Answer:
+
+Capture ID: When the item was clicked in the list, its unique Database ID was passed to the Edit Activity.
+
+User Input: The user modifies the data in the EditText fields.
+
+On Save Click:
+
+Retrieve the strings from the EditTexts.
+
+Call the Database Helper's update method, passing the ID and the new values.
+
+The Database Helper executes an SQL UPDATE command (UPDATE table SET ... WHERE id = ...).
+
+Finish: Close the activity so the user returns to the list (which should refresh).
+
+Q2: Give the code of the button onClick() function in Activity 2 to save the data using a SQLite approach.
+From Winter 2024/25, Winter 2022/23
+
+saveButton.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        // 1. Get Input
+        String name = nameInput.getText().toString();
+        String desc = descInput.getText().toString();
+
+        // 2. Prepare Database Helper
+        DatabaseHelper db = new DatabaseHelper(CurrentActivity.this);
+
+        // 3. Check if Updating or Creating (based on if we have an ID)
+        if (currentId != -1) {
+            db.updateBuilding(currentId, name, desc);
+        } else {
+            db.addBuilding(name, desc);
+        }
+
+        // 4. Return
+        finish();
+    }
+});
+
+
+Q3: Explain the steps to make a Room API database.
+From Winter 2024/25
+
+Answer:
+
+Dependencies: Add Room implementation to build.gradle.
+
+Entity: Create a class annotated with @Entity (represents the table). Define fields and a @PrimaryKey.
+
+DAO (Data Access Object): Create an interface annotated with @Dao. Define methods for interactions annotated with @Insert, @Delete, @Query.
+
+Database Class: Create an abstract class extending RoomDatabase, annotated with @Database. Include an abstract method that returns the DAO.
+
+Instance: Create a singleton instance of the database using Room.databaseBuilder().
+
+Q4: Give the code of the button onClick() function to save data using Room API.
+From Winter 2024/25
+
+saveButton.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        // 1. Create Entity Object
+        final Building newBuilding = new Building();
+        newBuilding.setName(nameInput.getText().toString());
+        newBuilding.setDescription(descInput.getText().toString());
+
+        // 2. Execute on Background Thread (Mandatory for Room)
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Access DAO and Insert
+                AppDatabase.getInstance(getApplicationContext())
+                           .buildingDao()
+                           .insert(newBuilding);
+                           
+                // 3. Update UI/Finish (must be on UI thread)
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();
+                    }
+                });
+            }
+        }).start();
+    }
+});
+
+
+Q5: Why is it important to do database work on a background thread?
+From Examples - Tagged.pdf
+
+Answer:
+Database operations (inserts, queries) are "blocking" operations that take time. If performed on the Main (UI) Thread, they block the user interface, causing the app to freeze. If the blockage lasts too long (>5 seconds), the Android OS triggers an ANR (Application Not Responding) error and crashes the app.
+
+📍 Topic 4: Advanced/Misc Questions
+
+Q1: The location field is a string representing geo-location. Give the code that will show the geo-location of the building using an onItemLongClick.
+From Winter 2024/25
+
+Answer:
+This requires an Implicit Intent to open a map application.
+
+// Inside the Adapter's onBindViewHolder or implementing LongClickListener interface
+holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+    @Override
+    public boolean onLongClick(View v) {
+        // 1. Get location string (e.g., "geo:0,0?q=Dublin")
+        String location = buildingList.get(position).getLocation();
+        
+        // 2. Create Implicit Intent with ACTION_VIEW
+        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + location);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps"); // Optional: ensure Google Maps opens
+
+        // 3. Verify there is an app to handle it
+        if (mapIntent.resolveActivity(v.getContext().getPackageManager()) != null) {
+            v.getContext().startActivity(mapIntent);
+        }
+        
+        return true; // Return true to indicate the click was handled
+    }
+});

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS4092 Flashcards</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f1f5f9; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        .card-inner.flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+        }
+        .card-front { background-color: #1e293b; color: white; border: 2px solid #334151; }
+        .card-back { background-color: #2563eb; color: white; transform: rotateY(180deg); border: 2px solid #1d4ed8; }
+        
+        .dark .card-front { background-color: #1e293b; border-color: #334151; }
+        .dark .card-back { background-color: #2563eb; border-color: #1d4ed8; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased selection:bg-purple-500 selection:text-white transition-colors duration-200">
+
+    <!-- Hardcoded Navigation -->
+    <nav class="bg-slate-800 border-b border-slate-700 text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 font-bold text-xl text-teal-400">
+                        CS4092 Flashcards
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="course.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Course</a>
+                            <a href="code.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Code</a>
+                            <a href="questions.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Questions</a>
+                            <a href="safety_net.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Safety Net</a>
+                            <a href="flashcards.html" class="bg-slate-900 text-white px-3 py-2 rounded-md text-sm font-medium">Flashcards</a>
+                            <a href="quiz.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Quiz</a>
+                            <a href="pastpapers.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Past Papers</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile -->
+        <div class="md:hidden flex space-x-2 p-2 overflow-x-auto bg-slate-900 border-b border-slate-700">
+             <a href="course.html" class="px-3 py-2 text-sm text-slate-400">Course</a>
+             <a href="code.html" class="px-3 py-2 text-sm text-slate-400">Code</a>
+             <a href="questions.html" class="px-3 py-2 text-sm text-slate-400">Questions</a>
+             <a href="safety_net.html" class="px-3 py-2 text-sm text-slate-400">Safety</a>
+             <a href="flashcards.html" class="px-3 py-2 text-sm text-white font-bold">Flashcards</a>
+             <a href="quiz.html" class="px-3 py-2 text-sm text-gray-400">Quiz</a>
+             <a href="pastpapers.html" class="px-3 py-2 text-sm text-white font-bold">Papers</a>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 py-12 flex flex-col items-center min-h-[80vh]">
+        
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">Rapid Fire Recall</h1>
+            <p class="text-gray-500 dark:text-gray-400">Test your knowledge against 38 key exam facts.</p>
+        </div>
+
+        <!-- Progress -->
+        <div class="w-full max-w-md mb-6">
+            <div class="flex justify-between text-sm text-slate-400 mb-1">
+                <span>Card <span id="current-index">1</span> of <span id="total-count">38</span></span>
+                <span id="topic-badge" class="font-bold text-teal-400">GENERAL</span>
+            </div>
+            <div class="w-full bg-slate-700 rounded-full h-2.5">
+                <div id="progress-bar" class="bg-teal-500 h-2.5 rounded-full transition-all duration-300" style="width: 5%"></div>
+            </div>
+        </div>
+
+        <!-- Card Container -->
+        <div class="perspective w-full max-w-2xl h-80 mb-8">
+            <div class="card-inner" id="flashcard">
+                <div class="card-face card-front">
+                    <h2 class="text-2xl font-bold" id="question-text">Question Loading...</h2>
+                    <p class="absolute bottom-4 text-xs text-gray-400 uppercase tracking-widest">Click to Flip</p>
+                </div>
+                <div class="card-face card-back">
+                    <div class="text-center">
+                        <h2 class="text-xl font-bold mb-4" id="answer-text">Answer Loading...</h2>
+                        <div id="code-snippet" class="hidden font-mono text-xs bg-black/20 p-2 rounded text-left inline-block max-w-full overflow-x-auto"></div>
+                    </div>
+                    <p class="absolute bottom-4 text-xs opacity-75 uppercase tracking-widest">Click to Flip Back</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex gap-4">
+            <button id="prev-btn" class="px-6 py-3 rounded-lg bg-slate-800 hover:bg-slate-700 font-bold transition border border-slate-700 text-white">
+                ← Previous
+            </button>
+            <button id="shuffle-btn" class="px-6 py-3 rounded-lg bg-yellow-600 hover:bg-yellow-500 text-white font-bold transition" title="Shuffle Cards">
+                🔀
+            </button>
+            <button id="next-btn" class="px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold transition shadow-lg shadow-blue-500/30">
+                Next →
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        const cards = [
+            {
+        topic: "ARCHITECTURE",
+        q: "Name the 4 Core Components of an Android application and state their UI status.",
+        a: "Activity (UI), Service (Background, NO UI), Broadcast Receiver (System listeners, NO UI), Content Provider (Shared data access, NO UI).",
+        code: null
+    },
+    {
+        topic: "ARCHITECTURE",
+        q: "What is the AndroidManifest.xml?",
+        a: "The configuration file that describes the app to the OS. It declares permissions, registers Activities/Services, and defines Intent Filters.",
+        code: null
+    },
+    {
+        topic: "COMPONENTS",
+        q: "Which Android component has NO UI and runs in the background indefinitely?",
+        a: "Service. Used for long-running operations (like playing music) without a user interface.",
+        code: null
+    },
+    {
+        topic: "COMPONENTS",
+        q: "Which component handles system-wide announcements like 'Battery Low'?",
+        a: "Broadcast Receiver. A component that listens for system-wide broadcast announcements. It has no UI.",
+        code: null
+    },
+    {
+        topic: "MANIFEST",
+        q: "If you create a Service class, what must you do in the Manifest?",
+        a: "Register it with a <service> tag inside <application>.",
+        code: '<service android:name=".MyService" />'
+    },
+    {
+        topic: "MANIFEST",
+        q: "What permission is required for Internet access?",
+        a: "android.permission.INTERNET",
+        code: '<uses-permission android:name="android.permission.INTERNET" />'
+    },
+    {
+        topic: "ARCHITECTURE",
+        q: "What is a 'Context' in Android?",
+        a: "It is an Interface to global information about the application environment. It allows access to resources (strings, images) and classes (launching activities).",
+        code: null
+    },
+    // --- LIFECYCLE ---
+    {
+        topic: "LIFECYCLE",
+        q: "Detail the Activity Lifecycle's 'Killable' state and the guaranteed callback method.",
+        a: "An Activity is Killable in the Paused or Stopped states. The only callback guaranteed to finish before OS termination is onPause(), where uncommitted persistent data must be saved.",
+        code: 'void onPause()'
+    },
+    {
+        topic: "LIFECYCLE",
+        q: "Which lifecycle method is the last safe place to save persistent data?",
+        a: "onPause(). Once the Activity is Stopped, the system may kill the process without warning if memory is low.",
+        code: null
+    },
+    {
+        topic: "LIFECYCLE",
+        q: "Which method runs when an Activity is no longer visible at all?",
+        a: "onStop()",
+        code: null
+    },
+    {
+        topic: "LIFECYCLE",
+        q: "Name the 3 public lifecycle methods of an Android Service.",
+        a: "onCreate() (Setup), onStartCommand() (Called on startService()), onDestroy() (Cleanup).",
+        code: null
+    },
+    {
+        topic: "LIFECYCLE",
+        q: "What happens to the Activity Stack when you press 'Back'?",
+        a: "The current Activity is popped off the stack (destroyed) and the previous Activity resumes focus.",
+        code: null
+    },
+    // --- UI & DATA BINDING (RECYCLERVIEW) ---
+    {
+        topic: "RECYCLERVIEW",
+        q: "State 2 key structural differences between RecyclerView and ListView.",
+        a: "1. ViewHolder Pattern: RecyclerView explicitly enforces it for view reuse. 2. Layout Manager: RecyclerView uses a LayoutManager (Linear, Grid) for flexible layout, while ListView was vertically fixed.",
+        code: null
+    },
+    {
+        topic: "RECYCLERVIEW",
+        q: "What is the primary role of the ViewHolder class in RecyclerView?",
+        a: "The ViewHolder holds cached references (findViewById()) to all the views within a single item/row, eliminating expensive lookups during scrolling for smooth performance.",
+        code: null
+    },
+    {
+        topic: "RECYCLERVIEW",
+        q: "What are the 3 mandatory methods in a RecyclerView Adapter?",
+        a: "onCreateViewHolder (Inflate XML/Create ViewHolder), onBindViewHolder (Bind data to views), getItemCount (Return dataset size).",
+        code: null
+    },
+    {
+        topic: "RECYCLERVIEW",
+        q: "What line of code is MANDATORY for a RecyclerView to display anything?",
+        a: "setLayoutManager()",
+        code: 'rv.setLayoutManager(new LinearLayoutManager(this));'
+    },
+    {
+        topic: "LAYOUTS",
+        q: "What is the difference between android:padding and android:layout_margin in XML layouts?",
+        a: "android:padding: Internal spacing between the element's content and its border. android:layout_margin: External spacing between the element and surrounding adjacent elements.",
+        code: null
+    },
+    {
+        topic: "ADAPTER",
+        q: "Which Adapter method is responsible for 'painting' the data onto the row views?",
+        a: "onBindViewHolder()",
+        code: null
+    },
+    {
+        topic: "LAYOUTS",
+        q: "What is 'Inflation' in Android?",
+        a: "The process of converting an XML layout file into actual Java View objects that can be displayed on screen.",
+        code: null
+    },
+    // --- COMMUNICATION (INTENTS) ---
+    {
+        topic: "INTENTS",
+        q: "Differentiate between Explicit and Implicit Intents.",
+        a: "Explicit Intent: Names the target component class (used internally). Implicit Intent: Declares a general action (e.g., ACTION_VIEW) for the OS to find a compatible app to handle it.",
+        code: null
+    },
+    {
+        topic: "INTENTS",
+        q: "When must you use startActivityForResult() instead of startActivity()?",
+        a: "When the calling Activity needs to know the outcome (e.g., RESULT_OK) or receive data back from the called Activity upon its completion (e.g., picking a contact/photo).",
+        code: null
+    },
+    {
+        topic: "INTENTS",
+        q: "Give the key function and URI needed to launch a mapping application via an Implicit Intent.",
+        a: "Action: Intent.ACTION_VIEW. URI: Uses the geo: scheme (e.g., geo:0,0?q=Address).",
+        code: 'Uri uri = Uri.parse("geo:0,0?q=Dublin");\nIntent i = new Intent(Intent.ACTION_VIEW, uri);\nstartActivity(i);'
+    },
+    {
+        topic: "INTENTS",
+        q: "How do you retrieve data sent via an Intent in the receiving Activity?",
+        a: "getIntent().getExtras()",
+        code: 'Bundle extras = getIntent().getExtras();'
+    },
+    // --- CONCURRENCY & THREADING ---
+    {
+        topic: "CONCURRENCY",
+        q: "What is the 'Golden Rule' of Android threading and what is the primary error it prevents?",
+        a: "Rule: NEVER perform long-running or blocking operations directly on the Main (UI) Thread. Error Prevented: ANR (Application Not Responding) error (UI thread blocked >5 seconds).",
+        code: null
+    },
+    {
+        topic: "CONCURRENCY",
+        q: "Describe the purpose of the 4 key callback methods of an AsyncTask and state their thread of execution.",
+        a: "onPreExecute() (UI Thread - Setup), doInBackground() (Background Thread - Work), onProgressUpdate() (UI Thread - Update progress), onPostExecute() (UI Thread - Final result/cleanup).",
+        code: null
+    },
+    {
+        topic: "CONCURRENCY",
+        q: "What method allows a background thread to update the UI?",
+        a: "runOnUiThread() or Handler.post()",
+        code: 'runOnUiThread(() -> { textView.setText("Done"); });'
+    },
+    {
+        topic: "CONCURRENCY",
+        q: "What is an ANR?",
+        a: "Application Not Responding. It happens when the Main UI thread is blocked for more than 5 seconds (usually by network or DB work), causing the app to freeze and potentially crash.",
+        code: null
+    },
+    // --- PERSISTENCE & STORAGE ---
+    {
+        topic: "DATABASE",
+        q: "Explain why all database calls (SQLite/Room) must be executed on a background thread.",
+        a: "Database calls are blocking operations. Executing them on the Main UI Thread halts the UI, causing the screen to freeze and leading directly to an ANR error. ",
+        code: 'new Thread(() -> { db.dao().insert(data); runOnUiThread(() -> finish()); }).start();'
+    },
+    {
+        topic: "STORAGE",
+        q: "What is the function and access level of Shared Preferences?",
+        a: "Function: Stores small amounts of primitive data (key-value pairs) for settings or simple state. Access: Private to the application.",
+        code: null
+    },
+    {
+        topic: "DATABASE",
+        q: "Name the 3 major conceptual classes required to implement Room Persistence.",
+        a: "Entity (@Entity - Table), DAO (@Dao - Methods defining DB interaction), Database (@Database - Main access point).",
+        code: null
+    },
+    {
+        topic: "STORAGE",
+        q: "SharedPreferences vs SQLite?",
+        a: "SharedPreferences: For small key-value pairs (settings, flags). SQLite: For large, structured, or repeating data (tables, lists).",
+        code: null
+    },
+    {
+        topic: "DATABASE",
+        q: "What does the Cursor interface enable developers to do in SQLite/Android?",
+        a: "The Cursor interface provides a mechanism for row-by-row access (sequential or random) to the result table generated by an SQL SELECT query. Cursors are typically read-only.",
+        code: null
+    },
+    {
+        topic: "STORAGE",
+        q: "What storage option is private to the app and good for caching files?",
+        a: "Internal Storage",
+        code: null
+    },
+    // --- ADVANCED/MISC. CONCEPTS ---
+    {
+        topic: "ANDROID RUNTIME",
+        q: "What is ART vs DVM?",
+        a: "DVM (Dalvik): Older 'Just-in-Time' runtime. ART (Android Runtime): Newer 'Ahead-of-Time' runtime, which compiles code during installation for faster app launch and better battery life.",
+        code: null
+    },
+    {
+        topic: "CONCURRENCY",
+        q: "What are two disadvantages of using multi-threading for concurrency control?",
+        a: "1. Code becomes significantly more complex to write and debug. 2. Developers must actively manage synchronization (locks/monitors) to prevent issues like race conditions and deadlocks.",
+        code: null
+    },
+    {
+        topic: "WEBVIEW",
+        q: "What is the primary method used by JavaScript within a WebView to communicate with Android's native Java layer?",
+        a: "The JavaScript Bridge (or addJavascriptInterface). A Java object is passed to the WebView, and JavaScript calls its methods (must be annotated with @JavascriptInterface).",
+        code: null
+    },
+    {
+        topic: "LAYERS",
+        q: "What is the Linux Kernel's role in Android?",
+        a: "The bottom layer. It handles hardware drivers (Camera, Display, WiFi), power management, and memory management.",
+        code: null
+    },
+    {
+        topic: "NAVIGATION",
+        q: "What object is used to transfer data packets between Activities?",
+        a: "Bundle (inside an Intent).",
+        code: null
+    },
+        ];
+
+        let currentIndex = 0;
+
+        const cardElement = document.getElementById('flashcard');
+        const questionText = document.getElementById('question-text');
+        const answerText = document.getElementById('answer-text');
+        const codeSnippet = document.getElementById('code-snippet');
+        const topicBadge = document.getElementById('topic-badge');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const shuffleBtn = document.getElementById('shuffle-btn');
+        const progressIndex = document.getElementById('current-index');
+        const progressTotal = document.getElementById('total-count');
+        const progressBar = document.getElementById('progress-bar');
+
+        function renderCard() {
+            const card = cards[currentIndex];
+            questionText.innerText = card.q;
+            answerText.innerText = card.a;
+            topicBadge.innerText = card.topic;
+            
+            // Code snippet handling
+            if (card.code) {
+                codeSnippet.innerText = card.code;
+                codeSnippet.classList.remove('hidden');
+            } else {
+                codeSnippet.classList.add('hidden');
+            }
+
+            // Progress
+            progressIndex.innerText = currentIndex + 1;
+            progressTotal.innerText = cards.length;
+            const pct = ((currentIndex + 1) / cards.length) * 100;
+            progressBar.style.width = `${pct}%`;
+
+            // Reset Flip
+            cardElement.classList.remove('flipped');
+        }
+
+        // Flip Logic
+        cardElement.addEventListener('click', () => {
+            cardElement.classList.toggle('flipped');
+        });
+
+        // Navigation
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderCard();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentIndex < cards.length - 1) {
+                currentIndex++;
+                renderCard();
+            } else {
+                // Loop back to start? Or just stop. Let's loop.
+                currentIndex = 0;
+                renderCard();
+            }
+        });
+
+        shuffleBtn.addEventListener('click', () => {
+            // Fisher-Yates Shuffle
+            for (let i = cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cards[i], cards[j]] = [cards[j], cards[i]];
+            }
+            currentIndex = 0;
+            renderCard();
+        });
+
+        // Initial Render
+        renderCard();
+
+    </script>
+</body>
+</html>

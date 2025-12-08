@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS4092 Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f1f5f9; }
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+        .option-btn.correct {
+            background-color: #22c55e; /* Green-500 */
+            border-color: #15803d; /* Green-700 */
+            color: white;
+        }
+        .option-btn.wrong {
+            background-color: #ef4444; /* Red-500 */
+            border-color: #b91c1c; /* Red-700 */
+            color: white;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased selection:bg-purple-500 selection:text-white transition-colors duration-200">
+
+    <!-- Hardcoded Navigation (Will be updated globally later, but including here for completeness) -->
+    <nav class="bg-slate-800 border-b border-slate-700 text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 font-bold text-xl text-teal-400">
+                        CS4092 Quiz
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="course.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Course</a>
+                            <a href="code.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Code</a>
+                            <a href="questions.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Questions</a>
+                            <a href="safety_net.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Safety Net</a>
+                            <a href="flashcards.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Flashcards</a>
+                            <a href="quiz.html" class="bg-slate-900 text-white px-3 py-2 rounded-md text-sm font-medium">Quiz</a>
+                            <a href="pastpapers.html" class="text-slate-300 hover:bg-slate-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Past Papers</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile -->
+        <div class="md:hidden flex space-x-2 p-2 overflow-x-auto bg-slate-900 border-b border-slate-700">
+             <a href="course.html" class="px-3 py-2 text-sm text-slate-400">Course</a>
+             <a href="quiz.html" class="px-3 py-2 text-sm text-white font-bold">Quiz</a>
+             <a href="pastpapers.html" class="px-3 py-2 text-sm text-gray-400">Papers</a>
+        </div>
+    </nav>
+
+    <main class="max-w-3xl mx-auto px-4 py-12 flex flex-col items-center min-h-[80vh]">
+        
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500">Exam Simulator</h1>
+            <p class="text-slate-400">Master the material. Wrong answers are queued for retry.</p>
+        </div>
+
+        <!-- Progress -->
+        <div class="w-full max-w-md mb-8">
+            <div class="flex justify-between text-sm text-slate-400 mb-1">
+                <span>Score: <span id="score-text" class="text-white font-bold">0</span></span>
+                <span id="topic-badge" class="font-bold text-teal-400">TOPIC</span>
+            </div>
+            <div class="w-full bg-slate-700 rounded-full h-2.5">
+                <div id="progress-bar" class="bg-teal-500 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div class="w-full bg-slate-800 rounded-2xl shadow-xl border border-slate-700 p-8 mb-8 relative overflow-hidden">
+            <!-- Question -->
+            <h2 id="question-text" class="text-2xl font-bold mb-8 text-center text-white min-h-[4rem] flex items-center justify-center">
+                Loading Question...
+            </h2>
+
+            <!-- Options Grid -->
+            <div id="options-container" class="grid grid-cols-1 gap-4">
+                <!-- Options injected by JS -->
+            </div>
+
+            <!-- Feedback Overlay (Hidden by default) -->
+            <div id="feedback-area" class="mt-6 text-center hidden">
+                <p id="feedback-text" class="text-lg font-bold mb-4"></p>
+                <div id="explanation-box" class="bg-slate-900 p-4 rounded-lg border border-slate-600 text-left text-sm text-slate-300 mb-4 hidden">
+                    <!-- Code snippet or explanation -->
+                </div>
+                <button id="next-btn" class="px-8 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold transition shadow-lg shadow-blue-500/30">
+                    Next Question →
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- DATA SOURCE (Copied from flashcards.html) ---
+        const allQuestions = [
+            { id: 1, topic: "ARCHITECTURE", q: "Name the 4 Core Components of an Android application and state their UI status.", a: "Activity (UI), Service (Background, NO UI), Broadcast Receiver (System listeners, NO UI), Content Provider (Shared data access, NO UI)." },
+            { id: 2, topic: "ARCHITECTURE", q: "What is the AndroidManifest.xml?", a: "The configuration file that describes the app to the OS. It declares permissions, registers Activities/Services, and defines Intent Filters." },
+            { id: 3, topic: "COMPONENTS", q: "Which Android component has NO UI and runs in the background indefinitely?", a: "Service. Used for long-running operations (like playing music) without a user interface." },
+            { id: 4, topic: "COMPONENTS", q: "Which component handles system-wide announcements like 'Battery Low'?", a: "Broadcast Receiver. A component that listens for system-wide broadcast announcements. It has no UI." },
+            { id: 5, topic: "MANIFEST", q: "If you create a Service class, what must you do in the Manifest?", a: "Register it with a <service> tag inside <application>.", code: '<service android:name=".MyService" />' },
+            { id: 6, topic: "MANIFEST", q: "What permission is required for Internet access?", a: "android.permission.INTERNET", code: '<uses-permission android:name="android.permission.INTERNET" />' },
+            { id: 7, topic: "ARCHITECTURE", q: "What is a 'Context' in Android?", a: "It is an Interface to global information about the application environment. It allows access to resources (strings, images) and classes (launching activities)." },
+            { id: 8, topic: "LIFECYCLE", q: "Detail the Activity Lifecycle's 'Killable' state and the guaranteed callback method.", a: "An Activity is Killable in the Paused or Stopped states. The only callback guaranteed to finish before OS termination is onPause(), where uncommitted persistent data must be saved." },
+            { id: 9, topic: "LIFECYCLE", q: "Which lifecycle method is the last safe place to save persistent data?", a: "onPause(). Once the Activity is Stopped, the system may kill the process without warning if memory is low." },
+            { id: 10, topic: "LIFECYCLE", q: "Which method runs when an Activity is no longer visible at all?", a: "onStop()" },
+            { id: 11, topic: "LIFECYCLE", q: "Name the 3 public lifecycle methods of an Android Service.", a: "onCreate() (Setup), onStartCommand() (Called on startService()), onDestroy() (Cleanup)." },
+            { id: 12, topic: "LIFECYCLE", q: "What happens to the Activity Stack when you press 'Back'?", a: "The current Activity is popped off the stack (destroyed) and the previous Activity resumes focus." },
+            { id: 13, topic: "RECYCLERVIEW", q: "State 2 key structural differences between RecyclerView and ListView.", a: "1. ViewHolder Pattern: RecyclerView explicitly enforces it for view reuse. 2. Layout Manager: RecyclerView uses a LayoutManager (Linear, Grid) for flexible layout, while ListView was vertically fixed." },
+            { id: 14, topic: "RECYCLERVIEW", q: "What is the primary role of the ViewHolder class in RecyclerView?", a: "The ViewHolder holds cached references (findViewById()) to all the views within a single item/row, eliminating expensive lookups during scrolling for smooth performance." },
+            { id: 15, topic: "RECYCLERVIEW", q: "What are the 3 mandatory methods in a RecyclerView Adapter?", a: "onCreateViewHolder (Inflate XML/Create ViewHolder), onBindViewHolder (Bind data to views), getItemCount (Return dataset size)." },
+            { id: 16, topic: "RECYCLERVIEW", q: "What line of code is MANDATORY for a RecyclerView to display anything?", a: "setLayoutManager()", code: 'rv.setLayoutManager(new LinearLayoutManager(this));' },
+            { id: 17, topic: "LAYOUTS", q: "What is the difference between android:padding and android:layout_margin in XML layouts?", a: "android:padding: Internal spacing between the element's content and its border. android:layout_margin: External spacing between the element and surrounding adjacent elements." },
+            { id: 18, topic: "ADAPTER", q: "Which Adapter method is responsible for 'painting' the data onto the row views?", a: "onBindViewHolder()" },
+            { id: 19, topic: "LAYOUTS", q: "What is 'Inflation' in Android?", a: "The process of converting an XML layout file into actual Java View objects that can be displayed on screen." },
+            { id: 20, topic: "INTENTS", q: "Differentiate between Explicit and Implicit Intents.", a: "Explicit Intent: Names the target component class (used internally). Implicit Intent: Declares a general action (e.g., ACTION_VIEW) for the OS to find a compatible app to handle it." },
+            { id: 21, topic: "INTENTS", q: "When must you use startActivityForResult() instead of startActivity()?", a: "When the calling Activity needs to know the outcome (e.g., RESULT_OK) or receive data back from the called Activity upon its completion (e.g., picking a contact/photo)." },
+            { id: 22, topic: "INTENTS", q: "Give the key function and URI needed to launch a mapping application via an Implicit Intent.", a: "Action: Intent.ACTION_VIEW. URI: Uses the geo: scheme (e.g., geo:0,0?q=Address).", code: 'Uri uri = Uri.parse("geo:0,0?q=Dublin");\nIntent i = new Intent(Intent.ACTION_VIEW, uri);\nstartActivity(i);' },
+            { id: 23, topic: "INTENTS", q: "How do you retrieve data sent via an Intent in the receiving Activity?", a: "getIntent().getExtras()", code: 'Bundle extras = getIntent().getExtras();' },
+            { id: 24, topic: "CONCURRENCY", q: "What is the 'Golden Rule' of Android threading and what is the primary error it prevents?", a: "Rule: NEVER perform long-running or blocking operations directly on the Main (UI) Thread. Error Prevented: ANR (Application Not Responding) error (UI thread blocked >5 seconds)." },
+            { id: 25, topic: "CONCURRENCY", q: "Describe the purpose of the 4 key callback methods of an AsyncTask and state their thread of execution.", a: "onPreExecute() (UI Thread - Setup), doInBackground() (Background Thread - Work), onProgressUpdate() (UI Thread - Update progress), onPostExecute() (UI Thread - Final result/cleanup)." },
+            { id: 26, topic: "CONCURRENCY", q: "What method allows a background thread to update the UI?", a: "runOnUiThread() or Handler.post()", code: 'runOnUiThread(() -> { textView.setText("Done"); });' },
+            { id: 27, topic: "CONCURRENCY", q: "What is an ANR?", a: "Application Not Responding. It happens when the Main UI thread is blocked for more than 5 seconds (usually by network or DB work), causing the app to freeze and potentially crash." },
+            { id: 28, topic: "DATABASE", q: "Explain why all database calls (SQLite/Room) must be executed on a background thread.", a: "Database calls are blocking operations. Executing them on the Main UI Thread halts the UI, causing the screen to freeze and leading directly to an ANR error.", code: 'new Thread(() -> { db.dao().insert(data); runOnUiThread(() -> finish()); }).start();' },
+            { id: 29, topic: "STORAGE", q: "What is the function and access level of Shared Preferences?", a: "Function: Stores small amounts of primitive data (key-value pairs) for settings or simple state. Access: Private to the application." },
+            { id: 30, topic: "DATABASE", q: "Name the 3 major conceptual classes required to implement Room Persistence.", a: "Entity (@Entity - Table), DAO (@Dao - Methods defining DB interaction), Database (@Database - Main access point)." },
+            { id: 31, topic: "STORAGE", q: "SharedPreferences vs SQLite?", a: "SharedPreferences: For small key-value pairs (settings, flags). SQLite: For large, structured, or repeating data (tables, lists)." },
+            { id: 32, topic: "DATABASE", q: "What does the Cursor interface enable developers to do in SQLite/Android?", a: "The Cursor interface provides a mechanism for row-by-row access (sequential or random) to the result table generated by an SQL SELECT query. Cursors are typically read-only." },
+            { id: 33, topic: "STORAGE", q: "What storage option is private to the app and good for caching files?", a: "Internal Storage" },
+            { id: 34, topic: "ANDROID RUNTIME", q: "What is ART vs DVM?", a: "DVM (Dalvik): Older 'Just-in-Time' runtime. ART (Android Runtime): Newer 'Ahead-of-Time' runtime, which compiles code during installation for faster app launch and better battery life." },
+            { id: 35, topic: "CONCURRENCY", q: "What are two disadvantages of using multi-threading for concurrency control?", a: "1. Code becomes significantly more complex to write and debug. 2. Developers must actively manage synchronization (locks/monitors) to prevent issues like race conditions and deadlocks." },
+            { id: 36, topic: "WEBVIEW", q: "What is the primary method used by JavaScript within a WebView to communicate with Android's native Java layer?", a: "The JavaScript Bridge (or addJavascriptInterface). A Java object is passed to the WebView, and JavaScript calls its methods (must be annotated with @JavascriptInterface)." },
+            { id: 37, topic: "LAYERS", q: "What is the Linux Kernel's role in Android?", a: "The bottom layer. It handles hardware drivers (Camera, Display, WiFi), power management, and memory management." },
+            { id: 38, topic: "NAVIGATION", q: "What object is used to transfer data packets between Activities?", a: "Bundle (inside an Intent)." }
+        ];
+
+        // --- STATE ---
+        let queue = [...allQuestions]; // Working copy
+        let currentQuestion = null;
+        let score = 0;
+        
+        // Shuffle queue initially
+        shuffleArray(queue);
+
+        // --- ELEMENTS ---
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackArea = document.getElementById('feedback-area');
+        const feedbackText = document.getElementById('feedback-text');
+        const explanationBox = document.getElementById('explanation-box');
+        const nextBtn = document.getElementById('next-btn');
+        const scoreText = document.getElementById('score-text');
+        const topicBadge = document.getElementById('topic-badge');
+        const progressBar = document.getElementById('progress-bar');
+
+        // --- LOGIC ---
+
+        function loadNextQuestion() {
+            if (queue.length === 0) {
+                showCompletion();
+                return;
+            }
+
+            // Reset UI
+            feedbackArea.classList.add('hidden');
+            explanationBox.classList.add('hidden');
+            optionsContainer.innerHTML = '';
+            
+            // Get Question
+            currentQuestion = queue.shift();
+            questionText.innerText = currentQuestion.q;
+            topicBadge.innerText = currentQuestion.topic;
+            
+            // Score Update
+            scoreText.innerText = score;
+            const progress = ((allQuestions.length - queue.length) / allQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            // Generate Options
+            const options = generateOptions(currentQuestion);
+            
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full p-4 rounded-lg bg-slate-700 hover:bg-slate-600 border border-slate-600 text-left text-slate-200 font-medium";
+                btn.innerText = opt.a;
+                btn.onclick = () => handleAnswer(btn, opt.id === currentQuestion.id);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function generateOptions(correctQ) {
+            // Find distractors from same topic
+            let sameTopic = allQuestions.filter(q => q.topic === correctQ.topic && q.id !== correctQ.id);
+            let otherTopics = allQuestions.filter(q => q.topic !== correctQ.topic);
+            
+            shuffleArray(sameTopic);
+            shuffleArray(otherTopics);
+
+            // Prefer same topic, fill with others
+            let distractors = [];
+            
+            // Try to get 3 from same topic
+            distractors = sameTopic.slice(0, 3);
+            
+            // If not enough, fill from others
+            if (distractors.length < 3) {
+                const needed = 3 - distractors.length;
+                distractors = [...distractors, ...otherTopics.slice(0, needed)];
+            }
+
+            // Combine and Shuffle
+            const options = [correctQ, ...distractors];
+            shuffleArray(options);
+            return options;
+        }
+
+        function handleAnswer(btn, isCorrect) {
+            // Disable all buttons
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            feedbackArea.classList.remove('hidden');
+
+            if (isCorrect) {
+                btn.classList.add('correct');
+                feedbackText.innerText = "Correct! 🎉";
+                feedbackText.className = "text-lg font-bold mb-4 text-green-400";
+                score += 10;
+            } else {
+                btn.classList.add('wrong');
+                feedbackText.innerText = "Incorrect. Rescheduled for retry. 🔄";
+                feedbackText.className = "text-lg font-bold mb-4 text-orange-400";
+                
+                // Highlight correct answer
+                allBtns.forEach(b => {
+                    if (b.innerText === currentQuestion.a) {
+                        b.classList.add('correct'); // Show which was right
+                    }
+                });
+
+                // Punishment: Push back to queue
+                queue.push(currentQuestion);
+            }
+
+            // Show Code/Explanation if exists
+            if (currentQuestion.code) {
+                explanationBox.classList.remove('hidden');
+                explanationBox.innerHTML = `<code class="font-mono text-xs text-teal-300">${currentQuestion.code.replace(/</g, '&lt;')}</code>`;
+            } else {
+                explanationBox.classList.add('hidden');
+            }
+        }
+
+        function showCompletion() {
+            questionText.innerText = "Quiz Completed! 🎓";
+            topicBadge.innerText = "DONE";
+            optionsContainer.innerHTML = `
+                <div class="text-center p-8">
+                    <p class="text-2xl text-slate-300 mb-4">Final Score: ${score}</p>
+                    <button onclick="location.reload()" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-lg transition">Restart Quiz</button>
+                </div>
+            `;
+            feedbackArea.classList.add('hidden');
+            progressBar.style.width = '100%';
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // --- EVENTS ---
+        nextBtn.addEventListener('click', loadNextQuestion);
+
+        // Start
+        loadNextQuestion();
+
+    </script>
+</body>
+</html>
